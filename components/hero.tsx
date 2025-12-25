@@ -4,11 +4,11 @@ import Link from 'next/link'
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-background via-background to-muted/20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-background via-background to-muted/20 min-h-screen flex items-center">
       {/* Decorative background pattern */}
       <div className="absolute inset-0 bg-[url('/indian-temple-pattern-mandala.jpg')] opacity-5" />
       
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-32">
+      <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20 w-full">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           {/* Left content */}
           <div className="space-y-8">
