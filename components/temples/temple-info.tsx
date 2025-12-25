@@ -1,54 +1,106 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export function TempleInfo({ templeId }: { templeId: string }) {
+  const [temple, setTemple] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchTemple() {
+      const { data, error } = await supabase
+        .from('temples')
+        .select('*')
+        .eq('id', templeId)
+        .single()
+
+      if (data) {
+        setTemple(data)
+      }
+      setLoading(false)
+    }
+
+    fetchTemple()
+  }, [templeId])
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="pt-6 flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (!temple) {
+    return (
+      <Card>
+        <CardContent className="pt-6 text-center py-12 text-muted-foreground">
+          Temple information not available
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="font-serif text-2xl">About This Temple</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div>
-          <h3 className="font-semibold text-lg mb-3">Overview</h3>
-          <p className="text-muted-foreground leading-relaxed">
-            Tirupati Balaji Temple, also known as the Venkateswara Temple, is a landmark Vaishnavite temple situated in the hill town of Tirumala at Tirupati. Dedicated to Lord Venkateswara, an incarnation of Vishnu, the temple is one of the most visited pilgrimage centers in the world, attracting millions of devotees every year.
-          </p>
-        </div>
-        
-        <div>
-          <h3 className="font-semibold text-lg mb-3">Temple Significance</h3>
-          <p className="text-muted-foreground leading-relaxed mb-4">
-            The temple is believed to be one of the eight Vishnu Swayambhu Kshetras where the deity is believed to have manifested by itself. The temple follows the Vaikhanasa Agama tradition and is known for its magnificent architecture, ancient rituals, and the divine atmosphere that attracts devotees from around the world.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Badge>Vaishnavite Temple</Badge>
-            <Badge>Ancient Heritage</Badge>
-            <Badge>Dravidian Architecture</Badge>
-            <Badge>Swayambhu Kshetra</Badge>
+        {temple.description && (
+          <div>
+            <h3 className="font-semibold text-lg mb-3">Overview</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {temple.description}
+            </p>
           </div>
-        </div>
+        )}
         
         <div>
-          <h3 className="font-semibold text-lg mb-3">Key Features</h3>
-          <ul className="space-y-2 text-muted-foreground">
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Seven hills sacred location with breathtaking views</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Spectacular gold-plated dome visible from miles away</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Ancient inscriptions dating back to the 9th century</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary mt-1">•</span>
-              <span>Daily rituals and special pujas performed with Vedic traditions</span>
-            </li>
-          </ul>
+          <h3 className="font-semibold text-lg mb-3">Temple Details</h3>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {temple.category && <Badge>{temple.category}</Badge>}
+            {temple.deity && <Badge>Deity: {temple.deity}</Badge>}
+            {temple.state && <Badge>{temple.state}</Badge>}
+          </div>
+          {temple.best_time_to_visit && (
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold">Best time to visit:</span> {temple.best_time_to_visit}
+            </p>
+          )}
         </div>
+        
+        {temple.rituals && temple.rituals.length > 0 && (
+          <div>
+            <h3 className="font-semibold text-lg mb-3">Rituals & Practices</h3>
+            <ul className="space-y-2 text-muted-foreground">
+              {temple.rituals.map((ritual: string, index: number) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-primary mt-1">•</span>
+                  <span>{ritual}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {temple.festivals && temple.festivals.length > 0 && (
+          <div>
+            <h3 className="font-semibold text-lg mb-3">Major Festivals</h3>
+            <div className="flex flex-wrap gap-2">
+              {temple.festivals.map((festival: string, index: number) => (
+                <Badge key={index} variant="outline">{festival}</Badge>
+              ))}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

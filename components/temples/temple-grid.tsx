@@ -94,7 +94,7 @@ export function TempleGrid() {
             <div className="flex flex-col sm:flex-row">
               <div className="relative aspect-[4/3] sm:aspect-square sm:w-48 flex-shrink-0">
                 <img
-                  src={temple.image_url || `/placeholder.svg?height=300&width=300&query=${temple.name}`}
+                  src={temple.image || `/placeholder.svg?height=300&width=300&query=${temple.name}`}
                   alt={temple.name}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />

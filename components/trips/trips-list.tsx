@@ -118,7 +118,7 @@ function TripCard({ trip }: { trip: any }) {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <h3 className="font-serif text-lg font-semibold mb-1 line-clamp-1">
-              {trip.name}
+              {trip.trip_name}
             </h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="h-4 w-4" />

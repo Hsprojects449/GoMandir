@@ -48,7 +48,7 @@ export default function ProfilePage() {
       .order('start_date', { ascending: false })
 
     const { data: favoritesData } = await supabase
-      .from('favorite_temples')
+      .from('favorites')
       .select('*, temples(*)')
       .eq('user_id', user.id)
 

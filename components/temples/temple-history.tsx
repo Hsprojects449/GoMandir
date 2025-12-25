@@ -1,7 +1,44 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { BookOpen } from 'lucide-react'
+import { BookOpen, Loader2 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 export function TempleHistory({ templeId }: { templeId: string }) {
+  const [temple, setTemple] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchTemple() {
+      const { data, error } = await supabase
+        .from('temples')
+        .select('*')
+        .eq('id', templeId)
+        .single()
+
+      if (data) {
+        setTemple(data)
+      }
+      setLoading(false)
+    }
+
+    fetchTemple()
+  }, [templeId])
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="pt-6 flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (!temple || !temple.history) return null
+
   return (
     <Card>
       <CardHeader>
@@ -12,23 +49,8 @@ export function TempleHistory({ templeId }: { templeId: string }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="font-semibold text-lg mb-3">Ancient Origins</h3>
-          <p className="text-muted-foreground leading-relaxed">
-            The history of Tirupati temple dates back to ancient times, with references found in Tamil literature dating to 500 BCE. The temple complex has been patronized by various dynasties including the Pallavas, Cholas, and Vijayanagara Empire, each contributing to its architectural splendor and religious significance.
-          </p>
-        </div>
-        
-        <div>
-          <h3 className="font-semibold text-lg mb-3">The Divine Legend</h3>
-          <p className="text-muted-foreground leading-relaxed">
-            According to legend, Lord Vishnu appeared as Srinivasa to save humanity from the trials and troubles of Kali Yuga. The deity took a loan from Kubera, the treasurer of heaven, to finance his wedding with Goddess Padmavati. It is believed that devotees who visit the temple and offer donations are helping the Lord repay this celestial debt.
-          </p>
-        </div>
-        
-        <div>
-          <h3 className="font-semibold text-lg mb-3">Architectural Marvel</h3>
-          <p className="text-muted-foreground leading-relaxed">
-            The temple showcases magnificent Dravidian architecture with intricate carvings, towering gopurams, and gold-plated domes. The main sanctum, built in the 9th century, houses the deity in a standing posture, which is a unique feature. The temple's construction spans several centuries, with contributions from various rulers enhancing its grandeur.
+          <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+            {temple.history}
           </p>
         </div>
       </CardContent>

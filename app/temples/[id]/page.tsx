@@ -11,24 +11,25 @@ export const metadata = {
   description: 'View detailed information about temples including history, timings, and visitor reviews.',
 }
 
-export default function TempleDetailPage({ params }: { params: { id: string } }) {
+export default async function TempleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   return (
     <div className="min-h-screen">
-      <TempleHero templeId={params.id} />
+      <TempleHero templeId={id} />
       
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-8">
-            <TempleInfo templeId={params.id} />
-            <TempleTiming templeId={params.id} />
-            <TempleHistory templeId={params.id} />
-            <TempleReviews templeId={params.id} />
-            <NearbyAttractions templeId={params.id} />
+            <TempleInfo templeId={id} />
+            <TempleTiming templeId={id} />
+            <TempleHistory templeId={id} />
+            <TempleReviews templeId={id} />
+            <NearbyAttractions templeId={id} />
           </div>
           
           <aside className="lg:col-span-1">
             <div className="sticky top-4">
-              <VisitPlanner templeId={params.id} />
+              <VisitPlanner templeId={id} />
             </div>
           </aside>
         </div>

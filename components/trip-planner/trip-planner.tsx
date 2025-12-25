@@ -38,7 +38,7 @@ export function TripPlanner() {
       .from('trips')
       .insert({
         user_id: user.id,
-        name: formData.name,
+        trip_name: formData.name,
         destination: formData.destination,
         start_date: formData.start_date,
         end_date: formData.end_date,

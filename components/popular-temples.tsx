@@ -61,7 +61,7 @@ export function PopularTemples() {
               <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
                 <div className="relative aspect-[3/2] overflow-hidden">
                   <img
-                    src={temple.image_url || `/placeholder.svg?height=400&width=600&query=${temple.name}`}
+                    src={temple.image || `/placeholder.jpg`}
                     alt={temple.name}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                   />

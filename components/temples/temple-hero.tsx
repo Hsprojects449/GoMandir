@@ -15,8 +15,8 @@ interface Temple {
   city: string
   state: string
   rating: number
-  reviews_count: number
-  image_url: string
+  review_count: number
+  image: string
   description: string
   is_favorited?: boolean
 }
@@ -44,7 +44,7 @@ export function TempleHero({ templeId }: { templeId: string }) {
         const { data: { user } } = await supabase.auth.getUser()
         if (user) {
           const { data: fav } = await supabase
-            .from('user_favorites')
+            .from('favorites')
             .select('id')
             .eq('user_id', user.id)
             .eq('temple_id', templeId)
@@ -124,7 +124,7 @@ export function TempleHero({ templeId }: { templeId: string }) {
     if (isFavorited) {
       // Remove from favorites
       await supabase
-        .from('user_favorites')
+        .from('favorites')
         .delete()
         .eq('user_id', user.id)
         .eq('temple_id', templeId)
@@ -137,7 +137,7 @@ export function TempleHero({ templeId }: { templeId: string }) {
     } else {
       // Add to favorites
       await supabase
-        .from('user_favorites')
+        .from('favorites')
         .insert({
           user_id: user.id,
           temple_id: templeId
@@ -184,6 +184,12 @@ export function TempleHero({ templeId }: { templeId: string }) {
     )
   }
 
+  const gallery = [
+    temple.image,
+    '/beautiful-indian-temple-golden-hour.jpg',
+    '/indian-temple-pattern-mandala.jpg'
+  ].filter(Boolean)
+
   return (
     <div className="relative bg-gradient-to-b from-primary/10 to-background">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -202,7 +208,7 @@ export function TempleHero({ templeId }: { templeId: string }) {
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-5 w-5" />
-                  <span className="text-lg">{temple.city}, {temple.state}</span>
+                  <span className="text-lg">{temple.location}</span>
                 </div>
               </div>
               
@@ -211,7 +217,7 @@ export function TempleHero({ templeId }: { templeId: string }) {
                   <Star className="h-5 w-5 fill-primary text-primary" />
                   <span className="text-2xl font-bold">{temple.rating}</span>
                   <span className="text-muted-foreground">
-                    ({temple.reviews_count?.toLocaleString() || 0} reviews)
+                    ({temple.review_count?.toLocaleString() || 0} reviews)
                   </span>
                 </div>
               </div>
@@ -238,21 +244,21 @@ export function TempleHero({ templeId }: { templeId: string }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2 aspect-[16/9] overflow-hidden rounded-xl">
               <img
-                src={temple.image_url || `/placeholder.svg?height=400&width=800&query=${encodeURIComponent(temple.name + ' temple')}`}
+                src={gallery[0] || `/placeholder.jpg`}
                 alt={temple.name}
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="aspect-[4/3] overflow-hidden rounded-xl">
               <img
-                src={`/.jpg?height=300&width=400&query=${encodeURIComponent(temple.name + ' temple architecture')}`}
+                src={gallery[1] || gallery[0] || `/placeholder.jpg`}
                 alt={`${temple.name} view 2`}
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="aspect-[4/3] overflow-hidden rounded-xl">
               <img
-                src={`/.jpg?height=300&width=400&query=${encodeURIComponent(temple.name + ' temple interior')}`}
+                src={gallery[2] || gallery[0] || `/placeholder.jpg`}
                 alt={`${temple.name} view 3`}
                 className="h-full w-full object-cover"
               />
